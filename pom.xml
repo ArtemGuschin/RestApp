@@ -12,13 +12,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <swagger.core.version>1.6.14</swagger.core.version>
         <jackoson.core>2.18.2</jackoson.core>
-        <jackson.anotation>2.18.2</jackson.anotation>
-        <jackson.databind>2.18.2</jackson.databind>
+        <jackson.anotation>2.17.1</jackson.anotation>
+        <jackson.databind>2.17.1</jackson.databind>
         <flyway.version>11.1.1</flyway.version>
         <flyway.postgres.version>11.2.0</flyway.postgres.version>
         <postgres.version>42.7.2</postgres.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jersey.container.servlet.version>4.0.0-M1</jersey.container.servlet.version>
         <jerseym.media.json.jackson.version>4.0.0-M1</jerseym.media.json.jackson.version>
@@ -34,6 +35,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>${swagger.core.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
