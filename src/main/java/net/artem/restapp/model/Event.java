@@ -33,4 +33,7 @@ public class Event {
     @ManyToOne(optional = false)
     @JoinColumn(name = "file_id", referencedColumnName = "id")
     private File file;
+
+
 }
+

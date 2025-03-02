@@ -2,24 +2,30 @@ package net.artem.restapp.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.artem.restapp.model.File;
+import net.artem.restapp.repository.impl.FileRepositoryImpl;
 import net.artem.restapp.service.FileService;
+
+
 import java.io.IOException;
 import java.util.List;
 
 
 @WebServlet("/files/*")
 public class FileController extends HttpServlet {
-    private FileService fileService;
+    private FileService fileService = new FileService(new FileRepositoryImpl());
     private ObjectMapper objectMapper;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
+    }
+
+    public FileController() {
+
     }
 
     @Override
@@ -116,7 +122,7 @@ public class FileController extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");

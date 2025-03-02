@@ -5,9 +5,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.Path;
 import net.artem.restapp.model.User;
+import net.artem.restapp.repository.impl.UserRepositoryImpl;
 import net.artem.restapp.service.UserService;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -15,11 +16,10 @@ import java.util.List;
 @WebServlet("/users/*")
 public class UserController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private UserService userService ;
+    private UserService userService = new UserService(new UserRepositoryImpl());
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController() {
     }
 
 
