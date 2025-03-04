@@ -13,13 +13,13 @@ import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/users/*")
-public class UserController extends HttpServlet {
+@WebServlet("/api/v1/users")
+public class UserControllerV1 extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UserService userService = new UserService(new UserRepositoryImpl());
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public UserController() {
+    public UserControllerV1() {
     }
 
 

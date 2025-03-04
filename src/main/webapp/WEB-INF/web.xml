@@ -2,7 +2,7 @@
 
 <!--    <servlet>-->
 <!--        <servlet-name>UserServlet</servlet-name>-->
-<!--        <servlet-class>net.artem.restapp.controller.UserController</servlet-class>-->
+<!--        <servlet-class>net.artem.restapp.controller.UserControllerV1</servlet-class>-->
 <!--    </servlet>-->
 <!--    <servlet-mapping>-->
 <!--        <servlet-name>UserServlet</servlet-name>-->
@@ -11,7 +11,7 @@
 <!--    &lt;!&ndash;  File Servlet &ndash;&gt;-->
 <!--    <servlet>-->
 <!--        <servlet-name>FileServlet</servlet-name>-->
-<!--        <servlet-class>net.artem.restapp.controller.FileController</servlet-class>-->
+<!--        <servlet-class>net.artem.restapp.controller.FileControllerV1</servlet-class>-->
 <!--    </servlet>-->
 <!--    <servlet-mapping>-->
 <!--        <servlet-name>FileServlet</servlet-name>-->
@@ -20,7 +20,7 @@
 
 <!--    <servlet>-->
 <!--        <servlet-name>EventServlet</servlet-name>-->
-<!--        <servlet-class>net.artem.restapp.controller.EventController</servlet-class>-->
+<!--        <servlet-class>net.artem.restapp.controller.EventRestControllerV1</servlet-class>-->
 <!--    </servlet>-->
 <!--    <servlet-mapping>-->
 <!--        <servlet-name>EventServlet</servlet-name>-->

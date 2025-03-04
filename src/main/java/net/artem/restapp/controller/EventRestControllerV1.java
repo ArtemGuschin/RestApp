@@ -1,88 +1,80 @@
 package net.artem.restapp.controller;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.artem.restapp.model.File;
-import net.artem.restapp.repository.impl.FileRepositoryImpl;
-import net.artem.restapp.service.FileService;
 
+import net.artem.restapp.model.Event;
+
+import net.artem.restapp.model.File;
+import net.artem.restapp.model.User;
+import net.artem.restapp.repository.impl.EventRepositoryImpl;
+import net.artem.restapp.repository.impl.FileRepositoryImpl;
+import net.artem.restapp.repository.impl.UserRepositoryImpl;
+import net.artem.restapp.service.EventService;
+import net.artem.restapp.service.FileService;
+import net.artem.restapp.service.UserService;
 
 import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/files/*")
-public class FileController extends HttpServlet {
-    private FileService fileService = new FileService(new FileRepositoryImpl());
-    private ObjectMapper objectMapper;
+@WebServlet("/api/v1/events")
+public class EventRestControllerV1 extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private final EventService eventService = new EventService(new EventRepositoryImpl());
+    private final UserService userService = new UserService(new UserRepositoryImpl());
+    private final FileService fileService = new FileService(new FileRepositoryImpl());
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public FileController(FileService fileService) {
-        this.fileService = fileService;
-    }
 
-    public FileController() {
-
-    }
-
-    @Override
-    public void init() {
-        objectMapper = new ObjectMapper();
-        System.out.println("FileServlet initialized");
+    public EventRestControllerV1() {
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
 
-
         if (pathInfo == null || pathInfo.equals("/")) {
-            List<File> files = fileService.getAll();
+            List<Event> events = eventService.getAll();
             resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(files));
+            resp.getWriter().write(objectMapper.writeValueAsString(events));
             return;
         }
-
-
         String[] splits = pathInfo.split("/");
         if (splits.length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
             return;
         }
-
         try {
             int id = Integer.parseInt(splits[1]);
-            File file = fileService.getById(id);
-            if (file == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+            Event event = eventService.getById(id);
+
+            if (event == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Event not found");
                 return;
             }
-
             resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(file));
+            resp.getWriter().write(objectMapper.writeValueAsString(event));
         } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID");
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         try {
-
-            File file = objectMapper.readValue(req.getInputStream(), File.class);
-
-
-            fileService.save(file);
-
-
+            Event event = objectMapper.readValue(req.getReader(), Event.class);
+            eventService.save(event);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(file));
-        } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid data");
+            resp.getWriter().write(objectMapper.writeValueAsString(event));
+
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -93,31 +85,26 @@ public class FileController extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
             return;
         }
-
         String[] splits = pathInfo.split("/");
         if (splits.length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
             return;
         }
-
         try {
             int id = Integer.parseInt(splits[1]);
+            Event event = objectMapper.readValue(req.getReader(), Event.class);
+            event.setId(id);
 
-
-            File file = objectMapper.readValue(req.getInputStream(), File.class);
-            file.setId(id); // Устанавливаем ID из URL
-
-
-            fileService.update(file);
-
+            eventService.update(event);
 
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(file));
+            resp.getWriter().write(objectMapper.writeValueAsString(event));
+
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
-        } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid data");
+        } catch (IOException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -128,36 +115,39 @@ public class FileController extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
             return;
         }
-
         String[] splits = pathInfo.split("/");
         if (splits.length != 2) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
             return;
         }
-
         try {
             int id = Integer.parseInt(splits[1]);
 
+            Event event = eventService.getById(id);
 
-            File file = fileService.getById(id);
-            if (file == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+            if (event == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Event not found");
                 return;
             }
-
-            fileService.deleteById(file.getId());
-
-
+            eventService.deleteById(event.getId());
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (NumberFormatException e) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
         }
     }
 
-    @Override
-    public void destroy() {
-        fileService = null;
-        objectMapper = null;
-        System.out.println("FileServlet destroyed");
+    private Event createEvent(int userId, int fileId) {
+        User user = userService.getById(userId);
+        File file = fileService.getById(fileId);
+
+        if (user == null || file == null) {
+            throw new IllegalArgumentException("User or File not found");
+        }
+        Event event = new Event();
+        event.setUser(user);
+        event.setFile(file);
+        eventService.save(event);
+
+        return event;
     }
 }
