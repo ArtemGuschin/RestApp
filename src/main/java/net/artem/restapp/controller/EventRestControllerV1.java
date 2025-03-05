@@ -44,24 +44,24 @@ public class EventRestControllerV1 extends HttpServlet {
             resp.getWriter().write(objectMapper.writeValueAsString(events));
             return;
         }
-        String[] splits = pathInfo.split("/");
-        if (splits.length != 2) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
-            return;
-        }
-        try {
-            int id = Integer.parseInt(splits[1]);
-            Event event = eventService.getById(id);
-
-            if (event == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Event not found");
-                return;
-            }
-            resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(event));
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID");
-        }
+//        String[] splits = pathInfo.split("/");
+//        if (splits.length != 2) {
+//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
+//            return;
+//        }
+//        try {
+//            int id = Integer.parseInt(splits[1]);
+//            Event event = eventService.getById(id);
+//
+//            if (event == null) {
+//                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Event not found");
+//                return;
+//            }
+//            resp.setContentType("application/json");
+//            resp.getWriter().write(objectMapper.writeValueAsString(event));
+//        } catch (NumberFormatException e) {
+//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID");
+//        }
     }
 
     @Override
