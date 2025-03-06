@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/api/v1/events")
+@WebServlet("/api/v1/events/*")
 public class EventRestControllerV1 extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final EventService eventService = new EventService(new EventRepositoryImpl());
@@ -44,24 +44,24 @@ public class EventRestControllerV1 extends HttpServlet {
             resp.getWriter().write(objectMapper.writeValueAsString(events));
             return;
         }
-//        String[] splits = pathInfo.split("/");
-//        if (splits.length != 2) {
-//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
-//            return;
-//        }
-//        try {
-//            int id = Integer.parseInt(splits[1]);
-//            Event event = eventService.getById(id);
-//
-//            if (event == null) {
-//                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Event not found");
-//                return;
-//            }
-//            resp.setContentType("application/json");
-//            resp.getWriter().write(objectMapper.writeValueAsString(event));
-//        } catch (NumberFormatException e) {
-//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID");
-//        }
+        String[] splits = pathInfo.split("/");
+        if (splits.length != 2) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
+            return;
+        }
+        try {
+            int id = Integer.parseInt(splits[1]);
+            Event event = eventService.getById(id);
+
+            if (event == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Event not found");
+                return;
+            }
+            resp.setContentType("application/json");
+            resp.getWriter().write(objectMapper.writeValueAsString(event));
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID");
+        }
     }
 
     @Override

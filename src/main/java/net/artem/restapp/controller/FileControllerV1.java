@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/api/v1/files")
+@WebServlet("/api/v1/files/*")
 public class FileControllerV1 extends HttpServlet {
     private FileService fileService = new FileService(new FileRepositoryImpl());
     private ObjectMapper objectMapper;
@@ -47,25 +47,25 @@ public class FileControllerV1 extends HttpServlet {
         }
 
 
-//        String[] splits = pathInfo.split("/");
-//        if (splits.length != 2) {
-//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
-//            return;
-//        }
-//
-//        try {
-//            int id = Integer.parseInt(splits[1]);
-//            File file = fileService.getById(id);
-//            if (file == null) {
-//                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
-//                return;
-//            }
-//
-//            resp.setContentType("application/json");
-//            resp.getWriter().write(objectMapper.writeValueAsString(file));
-//        } catch (NumberFormatException e) {
-//            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
-//        }
+        String[] splits = pathInfo.split("/");
+        if (splits.length != 2) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid URL");
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(splits[1]);
+            File file = fileService.getById(id);
+            if (file == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+                return;
+            }
+
+            resp.setContentType("application/json");
+            resp.getWriter().write(objectMapper.writeValueAsString(file));
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+        }
     }
 
     @Override
