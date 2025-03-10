@@ -2,29 +2,32 @@ package net.artem.restapp.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import net.artem.restapp.exception.UserNotFoundException;
 import net.artem.restapp.model.File;
 import net.artem.restapp.repository.impl.FileRepositoryImpl;
+import net.artem.restapp.repository.impl.UserRepositoryImpl;
 import net.artem.restapp.service.FileService;
+import net.artem.restapp.service.UserService;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 
 @WebServlet("/api/v1/files/*")
-public class FileControllerV1 extends HttpServlet {
-    private FileService fileService = new FileService(new FileRepositoryImpl());
+public class FileRestControllerV1 extends HttpServlet {
+    private FileService fileService = new FileService();
     private ObjectMapper objectMapper;
 
-    public FileControllerV1(FileService fileService) {
-        this.fileService = fileService;
-    }
 
-    public FileControllerV1() {
+    public FileRestControllerV1() {
 
     }
 
@@ -71,20 +74,24 @@ public class FileControllerV1 extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
+            Integer userId = Integer.parseInt(req.getParameter("userId"));
 
-            File file = objectMapper.readValue(req.getInputStream(), File.class);
+            Part filePart = req.getPart("file");
 
-
-            fileService.save(file);
-
+            File uploadedFile = fileService.uploadFile(userId, (javax.servlet.http.Part) filePart);
 
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(file));
+            resp.getWriter().write(objectMapper.writeValueAsString(uploadedFile));
+        } catch (UserNotFoundException e) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID format");
         } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid data");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "File upload failed: " + e.getMessage());
         }
     }
+
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {

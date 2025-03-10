@@ -3,12 +3,18 @@ package net.artem.restapp.service;
 import lombok.RequiredArgsConstructor;
 import net.artem.restapp.model.User;
 import net.artem.restapp.repository.UserRepository;
+import net.artem.restapp.repository.impl.UserRepositoryImpl;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+    private final UserRepository userRepository ;
+
+    public UserService() {
+        this.userRepository = new UserRepositoryImpl();
+
+    }
 
     public User getById(Integer id) {
         return userRepository.getById(id);

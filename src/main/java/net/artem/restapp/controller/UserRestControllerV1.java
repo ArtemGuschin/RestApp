@@ -14,12 +14,12 @@ import java.util.List;
 
 
 @WebServlet("/api/v1/users/*")
-public class UserControllerV1 extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private UserService userService = new UserService(new UserRepositoryImpl());
+public class UserRestControllerV1 extends HttpServlet {
+    private UserService userService = new UserService();
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public UserControllerV1() {
+    public UserRestControllerV1() {
+
     }
 
 
