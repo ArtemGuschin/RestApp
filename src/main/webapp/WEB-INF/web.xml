@@ -6,7 +6,7 @@
 <!--    </servlet>-->
 <!--    <servlet-mapping>-->
 <!--        <servlet-name>UserServlet</servlet-name>-->
-<!--        <url-pattern>/users</url-pattern>-->
+<!--        <url-pattern>/api/v1/users/*</url-pattern>-->
 <!--    </servlet-mapping>-->
 <!--    &lt;!&ndash;  File Servlet &ndash;&gt;-->
 <!--    <servlet>-->
@@ -15,7 +15,7 @@
 <!--    </servlet>-->
 <!--    <servlet-mapping>-->
 <!--        <servlet-name>FileServlet</servlet-name>-->
-<!--        <url-pattern>/files</url-pattern>-->
+<!--        <url-pattern>/api/v1/files/*</url-pattern>-->
 <!--    </servlet-mapping>-->
 
 <!--    <servlet>-->
@@ -24,6 +24,6 @@
 <!--    </servlet>-->
 <!--    <servlet-mapping>-->
 <!--        <servlet-name>EventServlet</servlet-name>-->
-<!--        <url-pattern>/events</url-pattern>-->
+<!--        <url-pattern>/api/v1/evetns/*</url-pattern>-->
 <!--    </servlet-mapping>-->
 </web-app>

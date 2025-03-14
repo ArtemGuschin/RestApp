@@ -2,6 +2,8 @@ package net.artem.restapp.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +20,7 @@ import net.artem.restapp.service.UserService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.List;
 
 
@@ -25,7 +28,7 @@ import java.util.List;
 public class FileRestControllerV1 extends HttpServlet {
     private FileService fileService = new FileService();
     private ObjectMapper objectMapper;
-
+private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public FileRestControllerV1() {
 
@@ -72,25 +75,15 @@ public class FileRestControllerV1 extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            Integer userId = Integer.parseInt(req.getParameter("userId"));
-
-            Part filePart = req.getPart("file");
-
-            File uploadedFile = fileService.uploadFile(userId, (javax.servlet.http.Part) filePart);
-
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            resp.setContentType("application/json");
-            resp.getWriter().write(objectMapper.writeValueAsString(uploadedFile));
-        } catch (UserNotFoundException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID format");
-        } catch (Exception e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "File upload failed: " + e.getMessage());
-        }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        InputStream inputStream = request.getInputStream();
+        Integer userId  = Integer.valueOf(request.getHeader("user_id"));
+//        File file = fileService.uploadFile(inputStream,userId);
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+//        out.print(gson.toJson(file));
     }
+
 
 
     @Override
