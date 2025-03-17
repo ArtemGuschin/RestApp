@@ -4,35 +4,38 @@ package net.artem.restapp.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+
+import net.artem.restapp.dto.FileDTO;
 import net.artem.restapp.exception.UserNotFoundException;
 import net.artem.restapp.model.File;
-import net.artem.restapp.repository.impl.FileRepositoryImpl;
-import net.artem.restapp.repository.impl.UserRepositoryImpl;
+
 import net.artem.restapp.service.FileService;
-import net.artem.restapp.service.UserService;
 
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
 
-@WebServlet("/api/v1/files/*")
+@WebServlet("/api/v1/files")
+@MultipartConfig
 public class FileRestControllerV1 extends HttpServlet {
     private FileService fileService = new FileService();
     private ObjectMapper objectMapper;
-private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public FileRestControllerV1() {
 
     }
+    
 
     @Override
     public void init() {
@@ -75,15 +78,43 @@ private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        InputStream inputStream = request.getInputStream();
-        Integer userId  = Integer.valueOf(request.getHeader("user_id"));
-//        File file = fileService.uploadFile(inputStream,userId);
-        response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
-//        out.print(gson.toJson(file));
-    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            Integer userId = Integer.valueOf(request.getHeader("user_id"));
 
+            Part filePart = request.getPart("file"); // "file" — имя поля формы для загрузки файла
+
+            String contentDisposition = filePart.getHeader("content-disposition");
+            String[] items = contentDisposition.split(";");
+            String fileName = null;
+            for (String item : items) {
+                if (item.trim().startsWith("filename=")) {
+                    fileName = item.substring(item.indexOf("=") + 2, item.length() - 1);
+                    break;
+                }
+            }
+
+            if (fileName == null || fileName.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File name is required");
+                return;
+            }
+
+            InputStream fileContent = filePart.getInputStream();
+
+            File file = fileService.uploadFile(fileContent, fileName, userId);
+
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            PrintWriter out = response.getWriter();
+            out.print(gson.toJson(file));
+        } catch (UserNotFoundException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID format");
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File upload failed: " + e.getMessage());
+        }
+    }
 
 
     @Override

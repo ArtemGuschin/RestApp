@@ -2,18 +2,19 @@ package net.artem.restapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
 import net.artem.restapp.model.Event;
 import net.artem.restapp.service.EventService;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/api/v1/events/*")
+@WebServlet("/api/v1/events")
 public class EventRestControllerV1 extends HttpServlet {
     private final EventService eventService = new EventService();
     private final ObjectMapper objectMapper = new ObjectMapper();

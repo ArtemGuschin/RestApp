@@ -1,19 +1,20 @@
 package net.artem.restapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
 import net.artem.restapp.model.User;
-import net.artem.restapp.repository.impl.UserRepositoryImpl;
+
 import net.artem.restapp.service.UserService;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/api/v1/users/*")
+@WebServlet("/api/v1/users")
 public class UserRestControllerV1 extends HttpServlet {
     private UserService userService = new UserService();
     private ObjectMapper objectMapper = new ObjectMapper();

@@ -1,6 +1,6 @@
 package net.artem.restapp.service;
 
-import jakarta.servlet.http.Part;
+
 import lombok.RequiredArgsConstructor;
 import net.artem.restapp.exception.UserNotFoundException;
 import net.artem.restapp.model.Event;
@@ -16,6 +16,7 @@ import net.artem.restapp.repository.impl.UserRepositoryImpl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -65,18 +66,31 @@ public class FileService {
             throw new UserNotFoundException(userId);
         }
 
-        String uploadDir = "uploads/";
-        Files.createDirectories(Paths.get(uploadDir));
+        String uploadDir = "C:\\Users\\art69\\IdeaProjects\\RestService\\src\\main\\resources\\uploads\\";
+        Path uploadPath = Paths.get(uploadDir);
+
+        if (!Files.exists(uploadPath)) {
+            try {
+                Files.createDirectories(uploadPath);
+            } catch (IOException e) {
+                throw new IOException("Could not create upload directory: " + uploadPath, e);
+            }
+        }
+
         String filePath = uploadDir + fileName;
 
-        Files.copy(fileContent, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(fileContent, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new IOException("Could not save file: " + filePath, e);
+        }
 
         File file = new File();
         file.setName(fileName);
         file.setFilePath(filePath);
         file = fileRepository.save(file);
 
-        Event event = new Event();
+         Event event = new Event();
         event.setUser(user);
         event.setFile(file);
         eventService.save(event);
