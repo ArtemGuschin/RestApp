@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/api/v1/users")
+@WebServlet("/api/v1/users/*")
 public class UserRestControllerV1 extends HttpServlet {
     private UserService userService = new UserService();
     private ObjectMapper objectMapper = new ObjectMapper();

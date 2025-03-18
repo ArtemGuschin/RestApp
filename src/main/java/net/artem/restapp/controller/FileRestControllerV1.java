@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 
-@WebServlet("/api/v1/files")
+@WebServlet("/api/v1/files/*")
 @MultipartConfig
 public class FileRestControllerV1 extends HttpServlet {
     private FileService fileService = new FileService();

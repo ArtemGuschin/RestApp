@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet("/api/v1/events")
+@WebServlet("/api/v1/events/*")
 public class EventRestControllerV1 extends HttpServlet {
     private final EventService eventService = new EventService();
     private final ObjectMapper objectMapper = new ObjectMapper();
